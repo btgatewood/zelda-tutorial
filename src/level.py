@@ -55,7 +55,7 @@ class Level:
                                  'object', surf)
         
         # player is a visible sprite, has a reference to obstacle sprites
-        self.player = Player((2000, 1430), [self.visible_sprites], 
+        self.player = Player((1970, 1430), [self.visible_sprites], 
                              self.obstacle_sprites)
 
     def run(self):
