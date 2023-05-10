@@ -12,6 +12,8 @@ class Player(pygame.sprite.Sprite):
 
         self.import_graphics()  # load data
         self.status = 'down'
+        self.frame_index = 0
+        self.animation_speed = 0.15
 
         self.direction = pygame.math.Vector2()
         self.speed = 5
@@ -34,8 +36,10 @@ class Player(pygame.sprite.Sprite):
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
 
-    
     def input(self):
+        if self.attacking:  # ignore input during attack state
+            return
+
         keys = pygame.key.get_pressed()
 
         # movement
@@ -58,13 +62,13 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
 
         # attack
-        if keys[pygame.K_SPACE] and not self.attacking:
+        if keys[pygame.K_SPACE]:
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
             print('attack')
         
         # magic
-        if keys[pygame.K_LCTRL] and not self.attacking:
+        if keys[pygame.K_LCTRL]:
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
             print('magic')
@@ -121,8 +125,19 @@ class Player(pygame.sprite.Sprite):
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack', '')
     
+    def animate(self):
+        animation = self.animations[self.status]
+
+        self.frame_index += self.animation_speed
+        if self.frame_index >= len(animation):
+            self.frame_index = 0
+        
+        self.image = animation[int(self.frame_index)]
+        self.rect = self.image.get_rect(center = self.hitbox.center)
+
     def update(self):
         self.input()
         self.cooldowns()
         self.get_status()
+        self.animate()
         self.move(self.speed)
