@@ -55,13 +55,14 @@ class Level:
                                  'object', surf)
         
         # player is a visible sprite, has a reference to obstacle sprites
-        self.player = Player((1970, 1430), [self.visible_sprites], 
+        self.player = Player((2275, 1500), [self.visible_sprites], 
                              self.obstacle_sprites)
 
     def run(self):
         # update and draw the game
         self.visible_sprites.update()
         self.visible_sprites.custom_draw(self.player)
+        debug(self.player.status)
 
 
 class YSortCameraGroup(pygame.sprite.Group):
