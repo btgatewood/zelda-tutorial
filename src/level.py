@@ -6,6 +6,7 @@ from tile import Tile
 from player import Player
 from settings import *
 from support import import_csv_layout, import_folder
+from weapon import Weapon
 
 from debug import debug
 
@@ -19,6 +20,7 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
 
         self.create_map()  # setup sprites
+        self.current_attack = None
     
     def create_map(self):
         # read and create Tiled map from csv data
@@ -55,8 +57,16 @@ class Level:
                                  'object', surf)
         
         # player is a visible sprite, has a reference to obstacle sprites
-        self.player = Player((2275, 1500), [self.visible_sprites], 
-                             self.obstacle_sprites)
+        self.player = Player((2275, 1500), 
+                             [self.visible_sprites], self.obstacle_sprites, 
+                             self.create_attack, self.destroy_attack)
+
+    def create_attack(self):
+        self.current_attack = Weapon(self.player, [self.visible_sprites])
+    
+    def destroy_attack(self):
+        if self.current_attack:
+            self.current_attack.kill()
 
     def run(self):
         # update and draw the game
